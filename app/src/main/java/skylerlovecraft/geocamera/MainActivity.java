@@ -1,26 +1,18 @@
 package skylerlovecraft.geocamera;
 
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
 
 
 public class MainActivity extends AppCompatActivity {
 
 
     // Create a new Fragment to be placed in the activity layout
-    PracticeFragment zeroFragment;
+    CameraFragment zeroFragment;
     ConstraintLayout constraintLayout;
     Button btnNewPicture, btnViewMap;
 
@@ -41,10 +33,10 @@ public class MainActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_main);
         initializeViewComponents();
-        zeroFragment = new PracticeFragment();
+        zeroFragment = new CameraFragment();
 
         // Create a new Fragment to be placed in the activity layout
-        PracticeFragment zeroFragment = new PracticeFragment();
+        CameraFragment zeroFragment = new CameraFragment();
 
     }
 
