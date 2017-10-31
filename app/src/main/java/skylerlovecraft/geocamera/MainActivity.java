@@ -1,28 +1,100 @@
 package skylerlovecraft.geocamera;
 
-import android.content.Intent;
+
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.support.constraint.ConstraintLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+
 
 public class MainActivity extends AppCompatActivity {
+
+
+    // Create a new Fragment to be placed in the activity layout
+    PracticeFragment zeroFragment;
+    ConstraintLayout constraintLayout;
+    Button btnNewPicture, btnViewMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Check that the activity is using the layout version with
+        // the fragment_container FrameLayout
+        if (findViewById(R.id.fragment_container) != null) {
+
+            // However, if we're being restored from a previous state,
+            // then we don't need to do anything and should return or else
+            // we could end up with overlapping fragments.
+            if (savedInstanceState != null) {
+                return;
+            }
+        }
         setContentView(R.layout.activity_main);
-        findViewById(R.id.btnNewPicture).setOnClickListener(new View.OnClickListener() {
+        initializeViewComponents();
+        zeroFragment = new PracticeFragment();
+
+        // Create a new Fragment to be placed in the activity layout
+        PracticeFragment zeroFragment = new PracticeFragment();
+
+    }
+
+
+    public void initializeViewComponents() {
+        btnNewPicture = findViewById(R.id.btnNewPicture);
+        btnViewMap = findViewById(R.id.btnViewMap);
+        btnNewPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity();
+                // In case this activity was started with special instructions from an
+                // Intent, pass the Intent's extras to the fragment as arguments
+                //disable everything on the main activity
+                disableMainViewComponents();
+                constraintLayout = (ConstraintLayout) findViewById(R.id.mainLayout);
+                //constraintLayout.setVisibility(View.INVISIBLE);
+
+                zeroFragment.setArguments(getIntent().getExtras());
+
+                // Add the fragment to the 'fragment_container' FrameLayout
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container, zeroFragment).commit();
             }
         });
+
         findViewById(R.id.btnViewMap).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity();
+                //Make the main_activity invisible:
+                constraintLayout = (ConstraintLayout) findViewById(R.id.mainLayout);
+
             }
         });
     }
+
+    public void disableMainViewComponents() {
+        btnNewPicture.setVisibility(View.INVISIBLE);
+        btnNewPicture.setClickable(false);
+        btnViewMap.setVisibility(View.INVISIBLE);
+        btnViewMap.setClickable(false);
+
+    }
+
+    public void enableMainViewComponents() {
+        btnNewPicture.setVisibility(View.VISIBLE);
+        btnNewPicture.setClickable(true);
+        btnViewMap.setVisibility(View.VISIBLE);
+        btnViewMap.setClickable(true);
+    }
+
+
 
 }
