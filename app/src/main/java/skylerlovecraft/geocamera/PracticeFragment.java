@@ -83,7 +83,7 @@ public class PracticeFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_practice, container, false);
+        view = inflater.inflate(R.layout.fragment_camera, container, false);
         btnNewPicture = (Button) view.findViewById(R.id.btnNewPicture);
         btnNewPicture.setOnClickListener(this);
         btnSave = (ImageButton) view.findViewById(R.id.btnSave);
@@ -167,23 +167,17 @@ public class PracticeFragment extends Fragment implements View.OnClickListener {
      * @return
      * @throws IOException
      */
-    public File createImageFile() throws IOException {
+    private File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         //Use ExternalStoragePublicDirectory so that it is accessible for the MediaScanner
         //Associate the directory with your application by adding an additional subdirectory
-        File pictureFolder = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
-        File storageDir = new File(pictureFolder, "MyCamera");
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"MyCamera");
         if(!storageDir.exists()){
-            System.out.println(storageDir.mkdir());
+            storageDir.mkdir();
         }
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
 
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
