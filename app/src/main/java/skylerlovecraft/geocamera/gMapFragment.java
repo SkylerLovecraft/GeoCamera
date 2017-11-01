@@ -109,7 +109,7 @@ public class gMapFragment extends Fragment implements OnMapReadyCallback, View.O
             myMap.setBuildingsEnabled(false);
             ((MainActivity)getActivity()).setLastLocation();
             LatLng latLng = new LatLng(((MainActivity)getActivity()).getLat(), ((MainActivity)getActivity()).getLong());
-            myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 25));
+            myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5));
             addMarkers();
 
         }
