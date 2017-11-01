@@ -12,9 +12,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     // Create a new Fragment to be placed in the activity layout
-    CameraFragment zeroFragment;
+    CameraFragment cameraFragment;
+    gMapFragment mMapFragment;
     ConstraintLayout constraintLayout;
     Button btnNewPicture, btnViewMap;
+
+    public MainActivity() {
+        mMapFragment = new gMapFragment();
+        cameraFragment = new CameraFragment();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +39,7 @@ public class MainActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_main);
         initializeViewComponents();
-        zeroFragment = new CameraFragment();
 
-        // Create a new Fragment to be placed in the activity layout
-        CameraFragment zeroFragment = new CameraFragment();
 
     }
 
@@ -51,22 +54,21 @@ public class MainActivity extends AppCompatActivity {
                 // Intent, pass the Intent's extras to the fragment as arguments
                 //disable everything on the main activity
                 disableMainViewComponents();
-                constraintLayout = (ConstraintLayout) findViewById(R.id.mainLayout);
-                //constraintLayout.setVisibility(View.INVISIBLE);
-
-                zeroFragment.setArguments(getIntent().getExtras());
+                cameraFragment.setArguments(getIntent().getExtras());
 
                 // Add the fragment to the 'fragment_container' FrameLayout
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, zeroFragment).commit();
+                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, cameraFragment).commit();
             }
         });
 
         findViewById(R.id.btnViewMap).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Make the main_activity invisible:
-                constraintLayout = (ConstraintLayout) findViewById(R.id.mainLayout);
+                //disable the contents of the main activity
+                disableMainViewComponents();
+                mMapFragment.setArguments(getIntent().getExtras());
+
+                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, mMapFragment).commit();
 
             }
         });
@@ -87,6 +89,16 @@ public class MainActivity extends AppCompatActivity {
         btnViewMap.setClickable(true);
     }
 
+    public void disableCameraFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .remove(cameraFragment).commit();
+    }
 
+
+    public void addNewMapMarker(double latitude, double longitude, String filename)
+    {
+        //TODO: add map marker
+
+    }
 
 }

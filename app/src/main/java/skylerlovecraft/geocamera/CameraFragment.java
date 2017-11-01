@@ -12,12 +12,14 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import java.io.File;
@@ -38,7 +40,10 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
     ImageButton btnSave;
     Button btnNewPicture;
     ImageView imageView;
-    String m_Text = "";
+    EditText editText;
+    String description = "";
+    String fileName = "";
+    double latitude, longitude;
 
 
 
@@ -73,6 +78,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        isStoragePermissionGranted();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -89,6 +95,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
         btnSave = (ImageButton) view.findViewById(R.id.btnSave);
         btnSave.setOnClickListener(this);
         imageView = (ImageView) view.findViewById(R.id.imageView);
+        editText = (EditText) view.findViewById(R.id.editText);
         return view;
     }
 
@@ -101,7 +108,11 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
 
                 break;
             case R.id.btnSave:
+                description = editText.toString();
 
+                ((MainActivity)getActivity()).enableMainViewComponents();
+                ((MainActivity)getActivity()).addNewMapMarker(latitude, longitude, fileName);
+                ((MainActivity)getActivity()).disableCameraFragment();
                 break;
         }
     }
@@ -169,23 +180,27 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
      */
     private File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
+        fileName = imageFileName;
         //Use ExternalStoragePublicDirectory so that it is accessible for the MediaScanner
         //Associate the directory with your application by adding an additional subdirectory
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"MyCamera");
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"geocamera");
         if(!storageDir.exists()){
             storageDir.mkdir();
         }
-        System.out.println("before create temp");
-        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
-        System.out.println("after create temp");
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
 
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
         Log.d(LOGTAG,"Storage Directory: " + storageDir.getAbsolutePath());
         return image;
     }
+
     /**
      * Boolean function to check if permissions are granted
      * If not, create an activity to request permissions
@@ -209,6 +224,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
             return true;
         }
     }
+
 
     /**
      * galleryAddPic()

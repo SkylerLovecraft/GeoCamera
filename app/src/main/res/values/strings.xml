@@ -6,5 +6,6 @@
     <string name="button">Button</string>
     <string name="title_activity_maps_fragment">Map</string>
     <color name="white">#FFFFFF</color>
-    <color name = "appblue">#7a42f4</color>
+    <color name="appblue">#7a42f4</color>
+    <string name="title_activity_map_fragment">Map</string>
 </resources>
