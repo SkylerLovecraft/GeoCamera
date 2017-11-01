@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.Vector;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,10 +18,11 @@ public class MainActivity extends AppCompatActivity {
     gMapFragment mMapFragment;
     ConstraintLayout constraintLayout;
     Button btnNewPicture, btnViewMap;
-
+    Vector<Photograph> vct;
     public MainActivity() {
         mMapFragment = new gMapFragment();
         cameraFragment = new CameraFragment();
+        vct = new Vector<Photograph>();
     }
 
     @Override
@@ -95,9 +98,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void addNewMapMarker(double latitude, double longitude, String filename)
+    public void addNewMapMarker(double latitude, double longitude, String filename, String filePath, String timestamp)
     {
         //TODO: add map marker
+        vct.add(new Photograph(latitude,longitude,filename,filePath,timestamp));
 
     }
 
