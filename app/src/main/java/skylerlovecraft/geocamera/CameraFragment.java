@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -46,7 +47,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
     ImageButton btnSave;
     Button btnNewPicture;
     ImageView imageView;
-    EditText editText;
+    TextView textView;
     String fileName = "";
     String filePath;
     double latitude, longitude;
@@ -91,43 +92,6 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         isStoragePermissionGranted();
 
-
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            return;
-        }
-
-        LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-
-        LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                // TODO Auto-generated method stub
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
-
-
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
-
-
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -144,8 +108,8 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
         btnSave = (ImageButton) view.findViewById(R.id.btnSave);
         btnSave.setOnClickListener(this);
         imageView = (ImageView) view.findViewById(R.id.imageView);
-        editText = (EditText) view.findViewById(R.id.editText);
-        editText.setText("");
+        textView = (TextView) view.findViewById(R.id.textView);
+        textView.setText("");
         return view;
     }
 
@@ -155,14 +119,17 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.btnNewPicture:
                 dispatchTakePictureIntent();
-                editText.setText(timeStamp);
+                textView.setText(timeStamp);
                 readyToSave = true;
                 break;
             case R.id.btnSave:
 
 
                 ((MainActivity)getActivity()).enableMainViewComponents();
-                ((MainActivity)getActivity()).addNewMapMarker(latitude, longitude, fileName, filePath, timeStamp);
+                ((MainActivity)getActivity()).setLastLocation();
+                latitude = ((MainActivity)getActivity()).getLat();
+                longitude = ((MainActivity)getActivity()).getLong();
+                ((MainActivity)getActivity()).addNewPhotograph(latitude, longitude, fileName, filePath, timeStamp);
                 ((MainActivity)getActivity()).disableCameraFragment();
                 break;
         }
