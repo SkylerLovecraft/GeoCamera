@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,7 +39,7 @@ import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
 
-public class CameraFragment extends Fragment implements View.OnClickListener {
+public class CameraFragment extends Fragment{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -96,44 +98,16 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        dispatchTakePictureIntent();
+        readyToSave = true;
+        ((MainActivity)getActivity()).enableMainViewComponents();
+        ((MainActivity)getActivity()).setLastLocation();
+        latitude = ((MainActivity)getActivity()).getLat();
+        longitude = ((MainActivity)getActivity()).getLong();
+        ((MainActivity)getActivity()).addNewPhotograph(latitude, longitude, fileName, filePath, timeStamp);
+        ((MainActivity)getActivity()).disableCameraFragment();
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_camera, container, false);
-        btnNewPicture = (Button) view.findViewById(R.id.btnNewPicture);
-        btnNewPicture.setOnClickListener(this);
-        btnSave = (ImageButton) view.findViewById(R.id.btnSave);
-        btnSave.setOnClickListener(this);
-        imageView = (ImageView) view.findViewById(R.id.imageView);
-        textView = (TextView) view.findViewById(R.id.textView);
-        textView.setText("");
-        return view;
-    }
-
-    @Override
-    public void onClick(View v) {
-
-        switch (v.getId()) {
-            case R.id.btnNewPicture:
-                dispatchTakePictureIntent();
-                textView.setText(timeStamp);
-                readyToSave = true;
-                break;
-            case R.id.btnSave:
-
-
-                ((MainActivity)getActivity()).enableMainViewComponents();
-                ((MainActivity)getActivity()).setLastLocation();
-                latitude = ((MainActivity)getActivity()).getLat();
-                longitude = ((MainActivity)getActivity()).getLong();
-                ((MainActivity)getActivity()).addNewPhotograph(latitude, longitude, fileName, filePath, timeStamp);
-                ((MainActivity)getActivity()).disableCameraFragment();
-                break;
-        }
-    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -289,6 +263,26 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             //Load the Bitmap from the Image file created by the camera
             Bitmap imageBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath,options);
+
+            try {
+                ExifInterface exif = new ExifInterface(mCurrentPhotoPath);
+                int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+                Log.d("EXIF", "Exif: " + orientation);
+                Matrix matrix = new Matrix();
+                if (orientation == 6) {
+                    matrix.postRotate(90);
+                }
+                else if (orientation == 3) {
+                    matrix.postRotate(180);
+                }
+                else if (orientation == 8) {
+                    matrix.postRotate(270);
+                }
+                imageBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true); // rotating bitmap
+            }
+            catch (Exception e) {
+
+            }
             //Set the ImageView to the bitmap
             imageView.setImageBitmap(imageBitmap);
             //Add the photo to the gallery

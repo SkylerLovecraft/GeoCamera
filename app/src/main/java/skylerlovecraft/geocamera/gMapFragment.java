@@ -1,7 +1,9 @@
 package skylerlovecraft.geocamera;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -103,6 +106,10 @@ public class gMapFragment extends Fragment implements OnMapReadyCallback, View.O
             ((MainActivity)getActivity()).mGoogleApiClient.connect();
             myMap = googleMap;
             myMap.setInfoWindowAdapter(this);
+            myMap.setBuildingsEnabled(false);
+            ((MainActivity)getActivity()).setLastLocation();
+            LatLng latLng = new LatLng(((MainActivity)getActivity()).getLat(), ((MainActivity)getActivity()).getLong());
+            myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 25));
             addMarkers();
 
         }
@@ -151,8 +158,9 @@ public class gMapFragment extends Fragment implements OnMapReadyCallback, View.O
     private View prepareInfoView(Marker marker){
         //prepare InfoView programmatically
         LinearLayout infoView = new LinearLayout(getContext());
-        LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+       // LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(
+         //       LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(500, 750);
         infoView.setOrientation(LinearLayout.HORIZONTAL);
         infoView.setLayoutParams(infoViewParams);
 
@@ -163,25 +171,36 @@ public class gMapFragment extends Fragment implements OnMapReadyCallback, View.O
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         //Load the Bitmap from the Image file created by the camera
         Bitmap imageBitmap = BitmapFactory.decodeFile(currentPhoto.filePath,options);
+
+        try {
+            ExifInterface exif = new ExifInterface(currentPhoto.filePath);
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+            Log.d("EXIF", "Exif: " + orientation);
+            Matrix matrix = new Matrix();
+            if (orientation == 6) {
+                matrix.postRotate(90);
+            }
+            else if (orientation == 3) {
+                matrix.postRotate(180);
+            }
+            else if (orientation == 8) {
+                matrix.postRotate(270);
+            }
+            imageBitmap = Bitmap.createBitmap(imageBitmap, 0, 0, imageBitmap.getWidth(), imageBitmap.getHeight(), matrix, true); // rotating bitmap
+        }
+        catch (Exception e) {
+
+        }
         //Set the ImageView to the bitmap
-        infoImageView.setMaxHeight(35);
-        infoImageView.setMaxWidth(50);
         infoImageView.setImageBitmap(imageBitmap);
         infoView.addView(infoImageView);
-
-        LinearLayout subInfoView = new LinearLayout(getContext());
-        LinearLayout.LayoutParams subInfoViewParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        subInfoView.setOrientation(LinearLayout.VERTICAL);
-        subInfoView.setLayoutParams(subInfoViewParams);
 
         TextView subInfoLat = new TextView(getContext());
         subInfoLat.setText("Lat: " + marker.getPosition().latitude);
         TextView subInfoLnt = new TextView(getContext());
         subInfoLnt.setText("Lnt: " + marker.getPosition().longitude);
-        subInfoView.addView(subInfoLat);
-        subInfoView.addView(subInfoLnt);
-        infoView.addView(subInfoView);
+        infoView.addView(subInfoLat);
+        infoView.addView(subInfoLnt);
 
         return infoView;
     }

@@ -6,60 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/appblue"
+    android:visibility="gone"
     tools:context=".CameraFragment">
 
     <!-- TODO: Update blank fragment layout -->
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="355dp"
-        android:layout_height="377dp"
-
-        android:layout_marginEnd="21dp"
-        android:layout_marginStart="21dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/mr_dialog_close_light"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.461"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btnNewPicture"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="68dp"
-        android:text="Take New Picture"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.93"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageButton
-        android:id="@+id/btnSave"
-        android:layout_width="69dp"
-        android:layout_height="64dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginEnd="16dp"
-        android:src="@android:drawable/ic_menu_save"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="261dp"
-        android:layout_height="44dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical|center_horizontal"
-        android:text="FileName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
 
 </android.support.constraint.ConstraintLayout>
