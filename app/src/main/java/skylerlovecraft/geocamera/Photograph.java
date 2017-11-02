@@ -7,6 +7,7 @@ package skylerlovecraft.geocamera;
 public class Photograph {
     double latitude, longitude;
     String timestamp, filePath, fileName;
+    int id;
 
     public Photograph(double latitude, double longitude, String fileName, String filePath, String timestamp)
     {
@@ -16,6 +17,7 @@ public class Photograph {
         this.longitude = longitude;
         this.timestamp = timestamp;
         this.filePath = filePath;
+
 
     }
 

@@ -117,6 +117,8 @@ public class gMapFragment extends Fragment implements OnMapReadyCallback, View.O
     }
     public void addMarkers(){
         Photograph photo;
+        //((MainActivity)getActivity()).populateVector();
+        vct = ((MainActivity)getActivity()).getVct();
         for(int i = 0; i < vct.size(); ++i)
         {
             System.out.println("in add markers");

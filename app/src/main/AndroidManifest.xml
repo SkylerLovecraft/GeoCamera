@@ -50,7 +50,14 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
+
         </provider>
+
+        <provider
+            android:authorities="skylerlovecraft.geocamera.PhotoProvider"
+            android:name=".PhotoProvider"
+            android:enabled="true"
+            android:exported="true"></provider>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
