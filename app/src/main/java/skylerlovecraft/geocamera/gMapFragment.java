@@ -78,6 +78,7 @@ public class gMapFragment extends Fragment implements OnMapReadyCallback, View.O
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
+        ((MainActivity)getActivity()).enableMainViewComponents();
     }
 
     @Override

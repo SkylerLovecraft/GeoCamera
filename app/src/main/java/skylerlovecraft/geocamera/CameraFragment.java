@@ -133,6 +133,12 @@ public class CameraFragment extends Fragment{
     private static final String CAMERA_FP_AUTHORITY = "skylerlovecraft.geocamera.fileprovider";
 
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ((MainActivity)getActivity()).enableMainViewComponents();
+    }
+
     /**
      * dispatchTakePictureIntent() -- Start the camera Intent
      *
@@ -284,7 +290,7 @@ public class CameraFragment extends Fragment{
 
             }
             //Set the ImageView to the bitmap
-            imageView.setImageBitmap(imageBitmap);
+//            imageView.setImageBitmap(imageBitmap);
             //Add the photo to the gallery
             galleryAddPic();
         }
